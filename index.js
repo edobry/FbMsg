@@ -1,9 +1,8 @@
 var util = require("util"),
-	shell = require("shelljs"),
+	request = require("request"),
 	creds = require("./creds.json");
 
-
-var endpoint = "https://www.facebook.com/ajax/mercury/thread_info.php";
+var endpoint = "https://facebook.com/ajax/mercury/thread_info.php";
 var headers = {
 	origin: "https://www.facebook.com",
 	"accept-encoding": "gzip, deflate",
@@ -21,7 +20,7 @@ var headerString = Object.keys(headers).map(function(name) {
  		return util.format("-H '%s:%s'", name, headers[name]); 
  	}).join(' ');
 
-var data = {
+var formdata = {
 	"client": "web_messenger",
 	"__user": creds.messagerId,
 	"__a": 1,
@@ -31,18 +30,12 @@ var data = {
 	"ttstamp": 2658171108561008897821025670,
 	"__rev": 1655994
 };
-data["messages[user_ids][" + creds.messageeId + "][offset]"] = 161;
-data["messages[user_ids][" + creds.messageeId + "][limit]"] = 80;
-var dataString = '?' + Object.keys(data).map(function(key) { return util.format("%s=%s", key, data[key]); }).join("&");
+formdata["messages[user_ids][" + creds.messageeId + "][offset]"] = 161;
+formdata["messages[user_ids][" + creds.messageeId + "][limit]"] = 80;
+var formdataString = Object.keys(formdata).map(function(key) { return util.format("%s=%s", key, formdata[key]); }).join("&");
 
-var curlCommand = util.format("curl -s '%s' %s --data '%s' --compressed",
- endpoint,
- headerString,
- dataString
-);
-console.log(curlCommand);
-shell.exec(curlCommand,
-{silent:true}, function(code, res) {
+var process = function(res) {
+	//console.log(res);
 	var data = JSON.parse(res.substring(9));
 
 	console.log(data.payload.actions.map(function(msg) {
@@ -53,4 +46,25 @@ shell.exec(curlCommand,
 	}).map(function(msg) {
 		return util.format("%s: %s", msg.author, msg.content);
 	}).join('\n'));
+};
+
+var options = {
+	uri: endpoint,
+	headers: headers,
+	method: "POST",
+	gzip: true,
+	body: formdataString
+};
+//console.log("Req: ", options);
+request(options, function(err, res, body) {
+	if(err) {
+		console.log(err);
+		return;
+	}
+
+	// console.log('STATUS: ' + res.statusCode);
+	// console.log('HEADERS: ' + JSON.stringify(res.headers));
+
+	process(body);
 });
+
