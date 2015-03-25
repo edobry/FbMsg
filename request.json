@@ -1,0 +1,22 @@
+{
+	"endpoint": "https://facebook.com/ajax/mercury/thread_info.php",
+	"headers" : {
+		"origin": "https://www.facebook.com",
+		"accept-encoding": "gzip, deflate",
+		"accept-language": "en-US,en;q=0.8,ru;q=0.6",
+		"pragma": "no-cache",
+		"user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.76 Safari/537.36",
+		"content-type": "application/x-www-form-urlencoded",
+		"accept": "*/*",
+		"cache-control": "no-cache",
+		"dnt": 1
+	},
+	"formdata": {
+		"client": "web_messenger",
+		"__a": 1,
+		"__req": "u",
+		"fb_dtsg": "AQGl8dXaRf8F",
+		"ttstamp": 2658171108561008897821025670,
+		"__rev": 1655994
+	}	
+}
